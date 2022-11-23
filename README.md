@@ -9,7 +9,6 @@ I am assuming you have a basic understanding of using Kubernetes. I also assume 
 ### Add Jelm Repositories
 
 * `helm repo add bitnami https://charts.bitnami.com/bitnami`
-* `helm repo add codecentric https://codecentric.github.io/helm-charts`
 
 ### Install Prereqs
 
@@ -17,7 +16,6 @@ According to the install docs, PostgreSQL and Redis are both required to be runn
 
 * `helm install -f postgresql.yaml -n mastodon --create-namespace postgresql bitnami/postgresql`
 * `helm install -f redis.yaml -n mastodon redis bitnami/redis`
-* `helm install -f mailhog.yaml -n mastodon mailhog codecentric/mailhog`
 
 ### Installing Mastodon
 
@@ -27,6 +25,14 @@ In the helm directory, edit the values file to match your settings. Then apply t
 
 This will install three copies of the Mastodon docker image, each running a specific aspect of Mastodon including web, streaming and sidekiq. In my testing I was able to do everything a normal Mastodon instance can do. What I did not do was setup any storage for media uploads.
 
+# secret generation
+
+```sh
+docker run -it tootsuite/mastodon bash
+bundle exec rake mastodon:webpush:generate_vapid_key
+bundle exec rake secret
+```
+
 ## Contact
 
-You can find me @dustinrue@fosstodon.org 
+You can find me @codervinod

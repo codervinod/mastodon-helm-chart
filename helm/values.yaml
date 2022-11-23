@@ -28,13 +28,11 @@ podAnnotations: {}
 podSecurityContext: {}
   # fsGroup: 2000
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+securityContext:
+  runAsUser: 1001
+  allowPrivilegeEscalation: true
+  capabilities:
+    add: ["SYS_PTRACE"]
 
 service:
   type: ClusterIP
@@ -47,7 +45,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: domain.com
+    - host: mastodon.rapidfort.com
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -70,17 +68,17 @@ resources: {}
 mastodon:
   env:
     - name: LOCAL_DOMAIN
-      value: "domain.com"
+      value: "mastodon.rapidfort.com"
     - name: SINGLE_USER_MODE
-      value: "true"
+      value: "false"
     - name: SECRET_KEY_BASE
-      value: "some random string"
+      value: ""
     - name: OTP_SECRET
-      value: "a different random string"
+      value: ""
     - name: VAPID_PRIVATE_KEY
-      value: "another string but this one seems more special"
+      value: ""
     - name: VAPID_PUBLIC_KEY
-      value: "like the private but public"
+      value: ""
     - name: DB_HOST
       value: "postgresql"
     - name: DB_PORT
@@ -98,15 +96,29 @@ mastodon:
     - name: REDIS_PASSWORD
       value: "mastodon"
     - name: SMTP_SERVER
-      value: "mailhog"
+      value: "email-smtp.us-east-1.amazonaws.com"
     - name: SMTP_PORT
-      value: "1025"
+      value: "587"
+    - name: SMTP_LOGIN
+      value: ""
+    - name: SMTP_PASSWORD
+      value: ""
     - name: SMTP_AUTH_METHOD
-      value: "none"
+      value: "plain"
     - name: SMTP_OPENSSL_VERIFY_MODE
       value: "none"
     - name: SMTP_FROM_ADDRESS
-      value: "Mastodon <notifications@domain.com>"
+      value: "RapidFort Mastodon <noreply@rapidfort.com>"
+    - name: S3_ENABLED
+      value: "true"
+    - name: S3_BUCKET
+      value: "rapidfort-standalone"
+    - name: AWS_ACCESS_KEY_ID
+      value: ""
+    - name: AWS_SECRET_ACCESS_KEY
+      value: ""
+    - name: S3_ALIAS_HOST
+      value: "rapidfort-standalone"
 autoscaling:
   enabled: false
   minReplicas: 1
